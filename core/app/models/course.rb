@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: courses
@@ -13,5 +15,5 @@
 #  index_courses_on_title  (title)
 #
 class Course < ApplicationRecord
-  validates_presence_of :title
+  validates :title, presence: true
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: courses
@@ -12,7 +14,7 @@
 #
 #  index_courses_on_title  (title)
 #
-require "test_helper"
+require 'test_helper'
 
 class CourseTest < ActiveSupport::TestCase
   should validate_presence_of(:title)
