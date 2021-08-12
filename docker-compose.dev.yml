@@ -1,0 +1,101 @@
+version: "2"
+
+volumes:
+  app-database:
+
+services:
+  core:
+    image: core
+    build:
+      context: ./core
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    command:
+      tail -f /dev/null
+    env_file:
+      - ./core/.env
+    volumes:
+      - ./core:/app
+    depends_on:
+      - postgres
+      - admin_tool
+  admin_tool:
+    image: admin_tool
+    build:
+      context: .
+      dockerfile: Dockerfile.admin_tool
+    ports:
+      - "3002:3000"
+    command:
+      tail -f /dev/null
+    env_file:
+      - ./admin_tool/.env
+    volumes:
+      - ./admin_tool:/app
+    depends_on:
+      - postgres
+  keymaker:
+    image: keymaker
+    build:
+      context: .
+      dockerfile: Dockerfile.keymaker
+    ports:
+      - "3001:3000"
+    command:
+      rails s -b 0.0.0.0
+    env_file:
+      - ./keymaker/.env
+    volumes:
+      - ./keymaker:/app
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:12
+    volumes:
+      - app-database:/var/lib/postgresql/data
+      - ./postgres:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_DB=app_database
+      - POSTGRES_USER=naire
+      - POSTGRES_PASSWORD=naire
+      - POSTGRES_HOST=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+  hydra:
+    image: oryd/hydra:v1.9.2
+    ports:
+      - "4444:4444" # Public port
+      - "4445:4445" # Admin port
+      - "5555:5555" # Port for hydra token user
+    env_file:
+      - ./hydra/.env
+    volumes:
+      - ./hydra/config.yml:/etc/config.yml
+    command:
+      serve all --dangerous-force-http -c /etc/config.yml
+    depends_on:
+      - hydra-migrate
+  hydra-migrate:
+    image: oryd/hydra:v1.9.2
+    env_file:
+      - ./hydra/.env
+    command:
+      migrate sql -e --yes
+    depends_on:
+      - postgres
+  oathkeeper:
+    image: oryd/oathkeeper
+    command:
+      - serve
+      - proxy
+      - --config
+      - /config/config.yml
+    ports:
+      - "4455:4455"
+      - "4456:4456"
+    environment:
+      - LOG_LEVEL=debug
+      - LOG_LEAK_SENSITIVE_VALUES=true
+      - SERVE_PROXY_CORS_ENABLED=true
+    volumes:
+      - ./oathkeeper:/config
