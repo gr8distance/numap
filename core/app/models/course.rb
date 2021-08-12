@@ -13,4 +13,5 @@
 #  index_courses_on_title  (title)
 #
 class Course < ApplicationRecord
+  validates_presence_of :title
 end
