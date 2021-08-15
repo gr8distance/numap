@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_12_074755) do
+ActiveRecord::Schema.define(version: 2021_08_15_053759) do
 
   create_table "courses", force: :cascade do |t|
     t.string "title", null: false
@@ -19,6 +19,14 @@ ActiveRecord::Schema.define(version: 2021_08_12_074755) do
     t.datetime "updated_at", precision: 6, null: false
     t.text "map_link"
     t.index ["title"], name: "index_courses_on_title"
+  end
+
+  create_table "labels", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["title"], name: "index_labels_on_title", unique: true
   end
 
 end
