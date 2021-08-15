@@ -17,4 +17,7 @@
 #
 class Course < ApplicationRecord
   validates :title, presence: true
+
+  has_many :course_labels
+  has_many :labels, through: :course_labels
 end

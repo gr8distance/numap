@@ -15,4 +15,7 @@
 class Label < ApplicationRecord
   validates_presence_of :title
   validates_uniqueness_of :title
+
+  has_many :course_labels
+  has_many :courses, through: :courses
 end
