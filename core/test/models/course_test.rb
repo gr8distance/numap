@@ -18,5 +18,8 @@
 require 'test_helper'
 
 class CourseTest < ActiveSupport::TestCase
+  subject { build(:label) }
+
   should validate_presence_of(:title)
+  should validate_uniqueness_of(:title)
 end
