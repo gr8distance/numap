@@ -7,5 +7,6 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Course.create!(title: '大瀬往復', description: '富士山を見ることができる絶景スポット')
-Label.create!(title: '春', description: '3月~5月におすすめのライド')
+course = Course.create!(title: '大瀬往復', description: '富士山を見ることができる絶景スポット')
+label = Label.create!(title: '春', description: '3月~5月におすすめのライド')
+CourseLabel.create!(course: course, label: label)
